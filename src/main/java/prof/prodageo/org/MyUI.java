@@ -11,13 +11,25 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.PasswordField;
+import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Slider;
-import com.vaadin.shared.ui.slider.SliderOrientation;
-import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Upload;
+import com.vaadin.ui.Upload.Receiver;
+import com.vaadin.ui.Upload.SucceededListener;
+import com.vaadin.ui.Upload.SucceededEvent;
+import com.vaadin.server.Page;
+import com.vaadin.ui.Notification;
+import com.vaadin.server.FileResource;
 import com.vaadin.server.ClassResource;
 import com.vaadin.ui.Image;
+
+import com.vaadin.shared.ui.slider.SliderOrientation;
+import com.vaadin.ui.ComboBox;
+import java.io.*;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,9 +52,9 @@ public class MyUI extends UI {
         private static final Logger log = LoggerFactory.getLogger(MyUIServlet.class);
 
     /* explicit declaration as attributes of graphical components for GenMyModel */
-        final VerticalLayout layoutPrincipal = new VerticalLayout();
-        final HorizontaLayout layoutIm = new HorizontaLayout();
         final VerticalLayout layout = new VerticalLayout();
+        final HorizontalLayout layoutPrincipal = new HorizontalLayout();
+        final HorizontalLayout layoutIm = new HorizontalLayout();
         final TextField name = new TextField();
         final TextField firstname = new TextField();
         final TextField email = new TextField();
@@ -52,18 +64,17 @@ public class MyUI extends UI {
         final PasswordField motDePasse = new PasswordField();
         final PasswordField motDePasseConfime = new PasswordField();
         Button button = new Button("Validation") ;
-        final Slider securite = new Slider(1, 10);
+        final ProgressBar securite = new ProgressBar(0.0f);
         final ComboBox classe = new ComboBox("Classes");
+        final ImageUploader receiver = new ImageUploader();
+        final Upload upload = new Upload("Selectionner un photo de profil", receiver);
         final Image image = new Image(null,new ClassResource("mario.jpg"));
-
 
     /* explicit callback */
     /* https://vaadin.com/docs/-/part/framework/application/application-events.html */
-    public class ClickMeClass implements Button.ClickListener
-    {
-        public void buttonClick(ClickEvent event)
-        {
-            layout.addComponent(new Label("Thanks " + name.getValue() + ", it works!"));
+    public class ClickMeClass implements Button.ClickListener {
+        public void buttonClick(ClickEvent event) {
+            layout.addComponent(new Label("Merci " + name.getValue() + ", vous êtes désormais inscrit ! ")); /////////////////////////////////
             log.info("Button clicked with value : " + name.getValue());
         }
     }
@@ -95,9 +106,13 @@ public class MyUI extends UI {
         email.setCaption("Email");
         motDePasse.setCaption("Mot de passe voulu");
         // jauge
-        securite.setOrientation(SliderOrientation.HORIZONTAL);
+        ///////////////////////////////////////////////////
         motDePasseConfime.setCaption("Confirmation du mot de passe");
 
+        //Image :
+
+        //Upload de l'Image
+        upload.setButtonCaption("Charger");
 
         /*
         Button button = new Button("Click Me");
@@ -110,13 +125,21 @@ public class MyUI extends UI {
         ClickMeClass callback = new ClickMeClass() ;
         button.addClickListener(callback);
 
-        layout.addComponents(name, firstname, dateDeNaissance, ecole, formationSuivie, classe, email, motDePasse, securite, motDePasseConfime, button, image);
-        //layout.addComponent();
-
+        layout.addComponents(name, firstname, dateDeNaissance, ecole, formationSuivie, classe, email, motDePasse, securite, motDePasseConfime, button);
         layout.setMargin(true);
         layout.setSpacing(true);
 
-        setContent(layout);
+        layoutIm.addComponents(image, upload);
+        layoutIm.setMargin(true);
+        layoutIm.setSpacing(true);
+
+
+        layoutPrincipal.addComponent(layout);
+        layoutPrincipal.addComponent(layoutIm);
+        layoutPrincipal.setMargin(true);
+        layoutPrincipal.setSpacing(true);
+
+        setContent(layoutPrincipal);
     }
 
     @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
@@ -124,3 +147,46 @@ public class MyUI extends UI {
     public static class MyUIServlet extends VaadinServlet {
     }
 }
+
+
+/*
+class ImageUploader implements Receiver, SucceededListener {
+    public File file;
+
+    public OutputStream receiveUpload(String filename,
+                                      String mimeType) {
+        // Create upload stream
+        FileOutputStream fos = null; // Stream to write to
+        try {
+            // Open the file for writing.
+            file = new File("/tmp/uploads/" + filename);
+            fos = new FileOutputStream(file);
+        } catch (final java.io.FileNotFoundException e) {
+            new Notification("Could not open file<br/>",
+                             e.getMessage(),
+                             Notification.Type.ERROR_MESSAGE)
+                .show(Page.getCurrent());
+            return null;
+        }
+        return fos; // Return the output stream to write to
+    }
+
+    public void uploadSucceeded(SucceededEvent event) {
+        // Show the uploaded file in the image viewer
+        image.setVisible(true);
+        image.setSource(new FileResource(file));
+    }
+};
+*/
+
+class ImageUploader implements Receiver {
+            private static final long serialVersionUID = -1276759102490466761L;
+            final ByteArrayOutputStream os = new ByteArrayOutputStream(10240);
+            public String filename; // The original filename
+
+            public OutputStream receiveUpload(String filename, String mimeType) {
+                this.filename = filename;
+                os.reset(); // If re-uploading
+                return os;
+            }
+        };
