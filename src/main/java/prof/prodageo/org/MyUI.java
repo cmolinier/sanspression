@@ -57,6 +57,7 @@ public class MyUI extends UI {
         private HorizontalLayout layoutIm = new HorizontalLayout();
         private TextField name = new TextField();
         private TextField firstname = new TextField();
+        private TextField pseudo = new TextField();
         private TextField email = new TextField();
         private TextField dateDeNaissance = new TextField();
         private TextField ecole = new TextField();
@@ -106,6 +107,7 @@ public class MyUI extends UI {
         // final TextField name = new TextField();
         name.setCaption("Prenom");
         firstname.setCaption("Nom");
+        pseudo.setCaption("Pseudo");
         dateDeNaissance.setCaption("Date de naissance");
         ecole.setCaption("Ecole");
         formationSuivie.setCaption("Formation Suivie");
@@ -131,7 +133,7 @@ public class MyUI extends UI {
         ClickMeClass callback = new ClickMeClass() ;
         button.addClickListener(callback);
 
-        layout.addComponents(name, firstname, dateDeNaissance, ecole, formationSuivie, classe, email, motDePasse, securite, motDePasseConfime, button);
+        layout.addComponents(name, firstname, pseudo, dateDeNaissance, ecole, formationSuivie, classe, email, motDePasse, securite, motDePasseConfime, button);
         layout.setMargin(true);
         layout.setSpacing(true);
 
