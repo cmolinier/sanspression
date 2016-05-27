@@ -52,32 +52,48 @@ public class MyUI extends UI {
         private static final Logger log = LoggerFactory.getLogger(MyUIServlet.class);
 
     /* explicit declaration as attributes of graphical components for GenMyModel */
-        final VerticalLayout layout = new VerticalLayout();
-        final HorizontalLayout layoutPrincipal = new HorizontalLayout();
-        final HorizontalLayout layoutIm = new HorizontalLayout();
-        final TextField name = new TextField();
-        final TextField firstname = new TextField();
-        final TextField email = new TextField();
-        final TextField dateDeNaissance = new TextField();
-        final TextField ecole = new TextField();
-        final TextField formationSuivie = new TextField();
-        final PasswordField motDePasse = new PasswordField();
-        final PasswordField motDePasseConfime = new PasswordField();
+        private VerticalLayout layout = new VerticalLayout();
+        private HorizontalLayout layoutPrincipal = new HorizontalLayout();
+        private HorizontalLayout layoutIm = new HorizontalLayout();
+        private TextField name = new TextField();
+        private TextField firstname = new TextField();
+        private TextField email = new TextField();
+        private TextField dateDeNaissance = new TextField();
+        private TextField ecole = new TextField();
+        private TextField formationSuivie = new TextField();
+        private PasswordField motDePasse = new PasswordField();
+        private PasswordField motDePasseConfime = new PasswordField();
         Button button = new Button("Validation") ;
-        final ProgressBar securite = new ProgressBar(0.0f);
-        final ComboBox classe = new ComboBox("Classes");
-        final ImageUploader receiver = new ImageUploader();
-        final Upload upload = new Upload("Selectionner un photo de profil", receiver);
-        final Image image = new Image(null,new ClassResource("mario.jpg"));
+        private ProgressBar securite = new ProgressBar(0.0f);
+        private ComboBox classe = new ComboBox("Classes");
+        private ImageUploader receiver = new ImageUploader();
+        private Upload upload = new Upload("Selectionner un photo de profil", receiver);
+        private Image image = new Image(null,new ClassResource("mario.jpg"));
+        private Controleur controleur = new Controleur();
+        private boolean champsValide = true;
 
     /* explicit callback */
     /* https://vaadin.com/docs/-/part/framework/application/application-events.html */
     public class ClickMeClass implements Button.ClickListener {
         public void buttonClick(ClickEvent event) {
-            layout.addComponent(new Label("Merci " + name.getValue() + ", vous êtes désormais inscrit ! ")); /////////////////////////////////
+          champsValide = champsValide && controleur.controlePrenomValide(name.getValue());
+          champsValide = champsValide && controleur.controleNomValide(firstname.getValue());
+          champsValide = champsValide && controleur.controleEmailVailde(email.getValue());
+          champsValide = champsValide && controleur.controleDateDeNaissanceValide(dateDeNaissance.getValue());
+          champsValide = champsValide && controleur.controleEcoleValide(ecole.getValue());
+          champsValide = champsValide && controleur.controleFormationSuivieValide(formationSuivie.getValue());
+          champsValide = champsValide && controleur.controleMotDePasseValide(motDePasse.getValue());
+          champsValide = champsValide && controleur.controleConfirmeMotDePasseValide(motDePasseConfime.getValue());
+          if (champsValide) {
+            layout.addComponent(new Label("Merci " + name.getValue() + ", vous êtes désormais inscrit ! "));
             log.info("Button clicked with value : " + name.getValue());
+          }
+          else {
+            layout.addComponent(new Label("un des champs n'est pas valide"));
+          }
+
         }
-    }
+    } //appeler le controleur ici
 
 
 
@@ -104,24 +120,14 @@ public class MyUI extends UI {
         classe.addItem("BAC+5");
 
         email.setCaption("Email");
-        motDePasse.setCaption("Mot de passe voulu");
-        // jauge
-        ///////////////////////////////////////////////////
-        motDePasseConfime.setCaption("Confirmation du mot de passe");
+        motDePasse.setCaption("Mot de passe");
 
-        //Image :
+        motDePasseConfime.setCaption("Confirmation du mot de passe");
 
         //Upload de l'Image
         upload.setButtonCaption("Charger");
 
-        /*
-        Button button = new Button("Click Me");
-        button.addClickListener( e -> {
-            layout.addComponent(new Label("Thanks " + name.getValue()
-                    + ", it works!"));
-            log.info("Button clicked with value : " + name.getValue());
-        });
-        */
+
         ClickMeClass callback = new ClickMeClass() ;
         button.addClickListener(callback);
 

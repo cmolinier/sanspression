@@ -6,6 +6,8 @@ import javax.servlet.annotation.WebServlet;
 
 public class Controleur {
 
+  public Controleur(){}
+
   public boolean controlePrenomValide(String prenom) {
     return true;
   }
