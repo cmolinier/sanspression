@@ -12,27 +12,31 @@ public class Controleur {
   }
 
   public boolean controlePrenomValide(String prenom) {
-    return true;
+    return lg.champsNonNull(prenom);
   }
 
   public boolean controleNomValide(String nom) {
-    return true;
+    return lg.champsNonNull(nom);
+  }
+
+  public boolean controlePseudoValide(String pseudo) {
+    return lg.verificationPseudo(pseudo);
   }
 
   public boolean controleEmailVailde(String email) {
-    return true;
+    return lg.champsNonNull(email);
   }
 
   public boolean controleDateDeNaissanceValide(String dateDeNaissance) {
-    return true;
+    return lg.champsNonNull(dateDeNaissance);
   }
 
   public boolean controleEcoleValide(String ecole) {
-    return true;
+    return lg.champsNonNull(ecole);
   }
 
   public boolean controleFormationSuivieValide(String formationSuivie) {
-    return true;
+    return lg.champsNonNull(formationSuivie);
   }
 
   public boolean controleMotDePasseValide(String mdp, String cmdp) {

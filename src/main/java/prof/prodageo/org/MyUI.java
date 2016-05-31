@@ -80,6 +80,7 @@ public class MyUI extends UI {
           champsValide = true;
           champsValide = champsValide && controleur.controlePrenomValide(name.getValue());
           champsValide = champsValide && controleur.controleNomValide(firstname.getValue());
+          champsValide = champsValide && controleur.controlePseudoValide(pseudo.getValue());
           champsValide = champsValide && controleur.controleEmailVailde(email.getValue());
           champsValide = champsValide && controleur.controleDateDeNaissanceValide(dateDeNaissance.getValue());
           champsValide = champsValide && controleur.controleEcoleValide(ecole.getValue());
