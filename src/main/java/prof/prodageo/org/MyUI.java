@@ -23,7 +23,7 @@ import com.vaadin.ui.Upload.SucceededEvent;
 import com.vaadin.server.Page;
 import com.vaadin.ui.Notification;
 import com.vaadin.server.FileResource;
-import com.vaadin.server.ClassResource;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Image;
 
 import com.vaadin.shared.ui.slider.SliderOrientation;
@@ -69,22 +69,22 @@ public class MyUI extends UI {
         private ComboBox classe = new ComboBox("Classes");
         private ImageUploader receiver = new ImageUploader();
         private Upload upload = new Upload("Selectionner un photo de profil", receiver);
-        private Image image = new Image(null,new ClassResource("mario.jpg"));
+        private Image image = new Image(null,new ThemeResource("image/mario.jpg"));
         private Controleur controleur = new Controleur();
-        private boolean champsValide = true;
+        private boolean champsValide;
 
     /* explicit callback */
     /* https://vaadin.com/docs/-/part/framework/application/application-events.html */
     public class ClickMeClass implements Button.ClickListener {
         public void buttonClick(ClickEvent event) {
+          champsValide = true;
           champsValide = champsValide && controleur.controlePrenomValide(name.getValue());
           champsValide = champsValide && controleur.controleNomValide(firstname.getValue());
           champsValide = champsValide && controleur.controleEmailVailde(email.getValue());
           champsValide = champsValide && controleur.controleDateDeNaissanceValide(dateDeNaissance.getValue());
           champsValide = champsValide && controleur.controleEcoleValide(ecole.getValue());
           champsValide = champsValide && controleur.controleFormationSuivieValide(formationSuivie.getValue());
-          champsValide = champsValide && controleur.controleMotDePasseValide(motDePasse.getValue());
-          champsValide = champsValide && controleur.controleConfirmeMotDePasseValide(motDePasseConfime.getValue());
+          champsValide = champsValide && controleur.controleMotDePasseValide(motDePasse.getValue(),motDePasseConfime.getValue());
           if (champsValide) {
             layout.addComponent(new Label("Merci " + name.getValue() + ", vous êtes désormais inscrit ! "));
             log.info("Button clicked with value : " + name.getValue());
@@ -94,7 +94,7 @@ public class MyUI extends UI {
           }
 
         }
-    } //appeler le controleur ici
+    }
 
 
 

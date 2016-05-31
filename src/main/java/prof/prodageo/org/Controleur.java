@@ -5,8 +5,11 @@ import javax.servlet.annotation.WebServlet;
 
 
 public class Controleur {
+  private LogiqueMetier lg;
 
-  public Controleur(){}
+  public Controleur(){
+    this.lg = new LogiqueMetier();
+  }
 
   public boolean controlePrenomValide(String prenom) {
     return true;
@@ -32,11 +35,8 @@ public class Controleur {
     return true;
   }
 
-  public boolean controleMotDePasseValide(String mdp) {
-    return true;
+  public boolean controleMotDePasseValide(String mdp, String cmdp) {
+    return lg.verificationMotDePasse(mdp,cmdp);
   }
 
-  public boolean controleConfirmeMotDePasseValide(String cmdp) {
-    return true;
-  }
 }
